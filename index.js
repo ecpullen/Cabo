@@ -5,6 +5,12 @@ $(document).ready(function() {
 
     $('#deck').width($('#deck').height()*.66)
     $('#discard').width($('#discard').height()*.66)
+
+    height = $('#title').height()
+    $('#title').css({
+        'font-size': (height) + 'px',
+        'line-height': height + 'px'
+     })
 });
 
 $(window).resize(function() {
@@ -14,4 +20,10 @@ $(window).resize(function() {
 
     $('#deck').width($('#deck').height()*.66)
     $('#discard').width($('#discard').height()*.66)
+
+    height = $('#title').height()
+    $('#title').css({
+        'font-size': (height) + 'px',
+        'line-height': height + 'px'
+     })
 });
