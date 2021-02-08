@@ -84,3 +84,7 @@
 .hand .card.p4, .hand .card.p8{
     left: 75%
 }
+
+.card, #deck, #discard{
+    border-radius: 1px;
+}
