@@ -119,3 +119,21 @@
     color: #FFFA65;
     display:none;
 }
+
+#centercards{
+    position: fixed;
+    width: 10%;
+    height: 15%;
+    left: 45%;
+    top: 50%;
+    z-index: 1;
+}
+
+#centercards{
+    text-align: center;
+    display:none;
+}
+
+#centercards img{
+    height: 100%;
+}

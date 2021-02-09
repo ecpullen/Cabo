@@ -222,6 +222,17 @@ function first_match_on_discard(player, pos){
     })
 }
 
+function show_cards_from_deck(cards){
+    c = $('#centercards')
+    c.empty()
+    inner = ""
+    for(card in cards){
+        inner = `${inner}<div class='card dealt'><img src='Cards/${cards[card].value}${cards[card].suit}.jpg' alt='Card' class='cardimg'></div>`
+    }
+    c.append(inner)
+    $('#centercards').css('display','block')
+    //need something for card on table
+}
 
 
 
