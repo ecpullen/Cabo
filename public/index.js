@@ -8,6 +8,11 @@ $(document).ready(function() {
         'font-size': height + 'px',
         'line-height': height + 'px'
      })
+     height = $('#center').height()
+    $('#center').css({
+        'font-size': height + 'px',
+        'line-height': height + 'px'
+     })
 });
 
 $(window).load(function(){
@@ -126,7 +131,7 @@ function load_game(){
                 playerhand = hands[player]
             }
             else{
-                hand = $('<div class="hand"></div>')
+                hand = $("div class='hand "+player+"'></div>")
                 inner = " <div class='name'>"+player+"</div>"
                 $("#opcards").empty()
                 for(card in hands[player]){
@@ -136,15 +141,33 @@ function load_game(){
                 $("#opcards").append(hand)
             }
         }
-        hand = $('<div class="hand"></div>')
-                inner = " <div class='name'>"+playername+"</div>"
-                for(card in playerhand){
-                    inner = inner + "<div class='card p"+card+"'><img src='Cards/back.jpg' alt='Card' class='cardimg'></div>"
-                }
-                hand.html($(inner))
-                $("#playercards").empty().append(hand)
+        hand = $("div class='hand "+playername+"'></div>")
+        inner = " <div class='name'>"+playername+"</div>"
+        for(card in playerhand){
+            inner = inner + "<div class='card p"+card+"'><img src='Cards/back.jpg' alt='Card' class='cardimg'></div>"
+        }
+        hand.html($(inner))
+        $("#playercards").empty().append(hand)
         size()
     })
+}
+
+discard_shown_time = none
+function delay_card_show(card){
+    timeleft = 10
+    $('#center').css('display','block')
+    $("#center").html(timeleft)
+    timer = setInterval(function(){
+        timeleft -= 1
+        $("#center").html(timeleft)
+        if(timeleft == 0){
+            //set time and show card
+            clearInterval(timer)
+            $('#center').css('display','none')
+            date = new Date()
+            $("#discard .cardimg").attr("src", card.suit+card.value+".jpg")
+        }
+    }, 1000)
 }
 
 

@@ -103,3 +103,19 @@
 .card, #deck, #discard{
     border-radius: 5%;
 }
+
+#center{
+    position: fixed;
+    width: 10%;
+    height: 20%;
+    left: 45%;
+    top: 45%;
+    z-index: 1;
+    background-color: rgba(69,117,93,.4);
+}
+
+#center{
+    text-align: center;
+    color: #FFFA65;
+    display:none;
+}
