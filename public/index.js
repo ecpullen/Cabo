@@ -46,7 +46,7 @@ gameid = "cfI9jREjdRVkKuagS8CD"
 
 
 function make_deck(){
-    suits = ['h','s','d','c']
+    suits = ['H','S','D','C']
     values = ['1','2','3','4','5','6','7','8','9','10','J','Q','K']
     cards = []
     for(i = 0; i < 13; i ++){
@@ -56,6 +56,7 @@ function make_deck(){
     }
     shuffle(cards)
     db.collection("games").doc(gameid).update({"deck": cards})
+    db.collection("games").doc(gameid).update({"discard": []})
 }
 
 function draw_deck(){
@@ -88,6 +89,14 @@ function discard_card(card){
     })
 }
 
+function get_player_hand(name){
+    return  db.collection("games").doc(gameid).get().then((doc) => {
+        data = doc.data()
+        discard = data.discard
+        return data.hands[playername]
+    })
+}
+
 //swaps card with card in position then discards the swapped card
 function swap_with_hand(card, position){
     db.collection("games").doc(gameid).get().then((doc) => {
@@ -100,6 +109,7 @@ function swap_with_hand(card, position){
         db.collection("games").doc(gameid).update({discard})
         p_update = "hands."+playername
         db.collection("games").doc(gameid).update({[p_update]:hand})
+        //TODO Need to add discard to the discard doc
     })
 }
 
@@ -131,17 +141,19 @@ function load_game(){
                 playerhand = hands[player]
             }
             else{
-                hand = $("div class='hand "+player+"'></div>")
+                hand = $("<div class='hand "+player+"'></div>")
                 inner = " <div class='name'>"+player+"</div>"
                 $("#opcards").empty()
                 for(card in hands[player]){
                     inner = inner + "<div class='card p"+card+"'><img src='Cards/back.jpg' alt='Card' class='cardimg'></div>"
                 }
-                hand.html($(inner))
+                hand.append($(inner))
+                
                 $("#opcards").append(hand)
+                
             }
         }
-        hand = $("div class='hand "+playername+"'></div>")
+        hand = $("<div class='hand "+playername+"'></div>")
         inner = " <div class='name'>"+playername+"</div>"
         for(card in playerhand){
             inner = inner + "<div class='card p"+card+"'><img src='Cards/back.jpg' alt='Card' class='cardimg'></div>"
@@ -152,9 +164,10 @@ function load_game(){
     })
 }
 
-discard_shown_time = none
-function delay_card_show(card){
-    timeleft = 10
+discard_shown_time = 0
+discard = ""
+function delay_discard_card_show(card){
+    timeleft = 3
     $('#center').css('display','block')
     $("#center").html(timeleft)
     timer = setInterval(function(){
@@ -164,10 +177,49 @@ function delay_card_show(card){
             //set time and show card
             clearInterval(timer)
             $('#center').css('display','none')
-            date = new Date()
-            $("#discard .cardimg").attr("src", card.suit+card.value+".jpg")
+            $("#discard .cardimg").attr("src", `Cards/${card.value + card.suit}.jpg`)
+            delay_discard_card_show = Date.now()
+            discard = card
+            $(".card").click(submit_match_card)
         }
     }, 1000)
+}
+
+function submit_match_card(){
+    console.log(this)
+    classes = $(this).attr("class").split(/\s+/)
+    parent_classes = $(this).parent().attr("class").split(/\s+/)
+    pos = 0
+    player = ""
+    pos = classes[1].substring(1,2)
+    player = parent_classes[1]
+    time = Date.now()-discard_shown_time
+    time = time.toString()
+    db.collection("games").doc(gameid).collection("GameState").doc("RacedCards").set({[time]:{player,pos}})
+}
+
+function first_match_on_discard(player, pos){
+    get_player_hand(player).then(function(hand){
+        console.log(hand)
+        if (discard.value == hand[pos].value){
+            discard_card(hand[pos])
+            delete hand[pos]
+            p_update = "hands."+player
+            db.collection("games").doc(gameid).update({[p_update]:hand})
+        }
+        else {
+            for(i = 1; i<=8; i++){
+                if (!hand.hasOwnProperty(i)){
+                    draw_deck().then(function(card){
+                        hand[i]=card
+                        p_update = "hands."+player
+                        db.collection("games").doc(gameid).update({[p_update]:hand})
+                    })
+                    break
+                }
+            }
+        }
+    })
 }
 
 
@@ -194,3 +246,5 @@ function shuffle(array) {
   
     return array;
   }
+
+  //Listeners (Snapshot)
