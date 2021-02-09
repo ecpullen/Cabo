@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>Cabo</title>
+<link rel="stylesheet" href="index.css">
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> 
+<script>
+    // Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+var firebaseConfig = {
+    apiKey: "AIzaSyBQDCZ-POulayEsvZkIfjImaFFuqRJj8jo",
+    authDomain: "cabo-b5f45.firebaseapp.com",
+    projectId: "cabo-b5f45",
+    storageBucket: "cabo-b5f45.appspot.com",
+    messagingSenderId: "349012292629",
+    appId: "1:349012292629:web:47b9de2b7182fbfc42ca1c",
+    measurementId: "G-W5BGV6KQSQ"
+    };
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics(); 
+</script>
+<script src="index.js"></script>
+</head>
+<body>
+
+	<div id='game'>
+        <div id='title'> Cabo</div>
+        <div id='opcards'>
+            <div class='hand'>
+                <div class='name'>Player1</div>
+                <div class='card p1'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p2'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p4'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p8'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+            </div>
+            <div class='hand'>
+                <div class='name'>Player2</div>
+                <div class='card p1'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p3'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p4'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p5'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+            </div>
+        </div>
+        <div id='middeck'>
+            <div id='deck'>
+                <img src="Cards/back.jpg" alt="Card" class="cardimg">
+            </div>
+            <div id='discard'>
+                <img src="Cards/sking.jpg" alt="Card" class="cardimg">
+            </div>
+        </div>
+        <div id='playercards'>
+            <div class='hand'>
+                <div class='name'>Player3</div>
+                <div class='card p2'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p3'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p6'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+                <div class='card p7'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

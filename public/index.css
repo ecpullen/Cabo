@@ -1,0 +1,105 @@
+
+#title {
+    width: 100%;
+    height: 8%;
+    padding: 1% 0%;
+    text-align: center;
+    color: #FFFA65;
+    background-color: #35654d;
+}
+
+#opcards{
+    width:100%;
+    height: 40%;
+    text-align: center;
+
+    background-color: #35654d;
+}
+
+#middeck{
+    width: 100%;
+    height: 10%;
+    text-align: center;
+
+    background-color: #35654d;
+}
+
+#middeck *{
+    display: inline-block;
+    height: 100%;
+    margin: 0% 1%;
+}
+
+#middeck #deck{
+    background-color: #FF4500;
+}
+
+#middeck #discard{
+    background-color: gray;
+    
+}
+
+#playercards{
+    width:100%;
+    height: 40%;
+    text-align: center;
+
+    background-color:#35654d;
+}
+
+.hand{
+    display: inline-block;
+    height: 80%;
+    margin: 1.25% 0%;
+    position: relative;
+    background-color: #45755d;
+}
+
+.hand .name{
+    text-align: center;
+    height: 8%;
+    margin-top: 2%;
+    width: 100%;
+    color: #FFFA65;
+}
+
+.hand .card{
+    width: 20%;
+    height: 30%;
+    margin: 7.5% 2.5%;
+    position: absolute;
+    display: block;
+    background-color: #FF4500;
+}
+
+.cardimg{
+    height: 100%;
+}
+
+.hand .card.p1, .hand .card.p2, .hand .card.p3, .hand .card.p4 {
+    top: 10%;
+}
+
+.hand .card.p5, .hand .card.p6, .hand .card.p7, .hand .card.p8 {
+    top: 50%;
+}
+
+.hand .card.p1, .hand .card.p5{
+    left: 0%
+}
+
+.hand .card.p2, .hand .card.p6{
+    left: 25%
+}
+
+.hand .card.p3, .hand .card.p7{
+    left: 50%
+}
+
+.hand .card.p4, .hand .card.p8{
+    left: 75%
+}
+
+.card, #deck, #discard{
+    border-radius: 5%;
+}
