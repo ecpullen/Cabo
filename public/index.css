@@ -137,3 +137,65 @@
 #centercards img{
     height: 100%;
 }
+
+#opcards, #middeck, #playercards, #startgame {
+    display: none;
+}
+
+#startgame, #lobby{
+    width:100%;
+    height: 85%;
+    background-color: #35654d;
+    text-align: center;
+}
+
+#start, #join{
+    width: 10%;
+    height: 20%;
+    display: inline-block;
+    padding: 0%;
+    border: 0%;
+    margin-top: 0%;
+}
+
+#startname{
+    width: 20%;
+    display: inline-block;
+    padding: 0%;
+    border: 0%;
+    margin-top: 10%;
+}
+
+#startbutton{
+    width: 100%;
+}
+
+#jointext, #joinbutton{
+    width: 100%;
+    display: inline-block;
+}
+
+fieldset{
+    border-color: #45755d;
+    border: 0px;
+}
+
+#gameid{
+    width: 100%;
+    height: 10%;
+    color: #FFFA65;
+}
+
+#lobbyplayers ul{
+    padding: 0%;
+    margin: 0%;
+    width: 100%;
+    margin-top: 1%;
+}
+
+#lobbyplayers li{
+    height: 5%;
+    display: block;
+    color: #FFFA65;
+    margin: .5% 0%;
+}

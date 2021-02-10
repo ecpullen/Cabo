@@ -26,11 +26,12 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics(); 
 </script>
+<script src="startgame.js"></script>
 <script src="index.js"></script>
 </head>
 <body>
+    <div id='title'> Cabo</div>
 	<div id='game'>
-        <div id='title'> Cabo</div>
         <div id='center'></div>
         <div id='centercards'></div>
         <div id='opcards'>
@@ -66,6 +67,31 @@ firebase.analytics();
                 <div class='card p7'><img src="Cards/back.jpg" alt="Card" class="cardimg"></div>
             </div>
         </div>
+    </div>
+
+    <div id='startgame'>
+        <div><div id="startname">
+            <input type="text" placeholder="Name">
+        </div></div>
+        <div><div id="start">
+            <fieldset>
+            <button id='startbutton'>Start Game</button>
+        </fieldset>
+        </div>
+        <div id="join">
+            <fieldset>
+            <input type="number" placeholder="Lobby Code" id='jointext'>
+            <button id='joinbutton'>Join Game</button>
+        </fieldset>
+        </div></div>
+    </div>
+    <div id='lobby'>
+        <div id="gameid">Game ID: 1234543</div>
+        <div id="lobbyplayers"><ul><li>Ethan</li><li>Dhruv</li></ul></div>
+
+        <div id="adminstartbutton"><button>Start Game</button></div>
+        
+        
     </div>
 
 </body>
