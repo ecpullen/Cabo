@@ -243,6 +243,7 @@ function submit_match_card(){
 }
 
 function first_match_on_discard(player, pos){
+    //TODO player that played the card
     get_player_hand(player).then(function(hand){
         console.log(hand)
         if (discard.value == hand[pos].value){
@@ -326,11 +327,14 @@ function make_card_swap(position, card){
 function clear_card_race(){
     db.collection("games").doc(gameid).collection("GameState").doc("RacedCards").delete()
 }
+do_power = false
 
 function make_card_to_discard(card){
     console.log("Center to discard function", card)
     return function(){
         console.log("discarding", card)
         discard_card(card)
+        //insert powers
+        //change do power to value of cardß
     }
 }

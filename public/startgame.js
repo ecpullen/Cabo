@@ -98,6 +98,9 @@ function start_game(){
             db.collection("games").doc(gameid).collection("GameState").doc("Discard").set({Card:false})
             db.collection("games").doc(gameid).collection("GameState").doc("Turn").set({Turn:players[Math.floor(Math.random() * players.length)]})
             db.collection("games").doc(gameid).collection("GameState").doc("State").set({state:"start"})
+            //add highlight document with {cards:[]}
+            //add log doc with {log:[]}
+                    //will need listeners in setup_listeners()
 
             //set listener for change in game state
             db.collection("games").doc(gameid).collection("GameState").doc("State").onSnapshot((doc)=>state_change(doc))
@@ -161,6 +164,9 @@ function setup_listeners(){
     db.collection("games").doc(gameid).collection("GameState").doc("Turn").onSnapshot((doc)=>{
         data = doc.data()
         load_game()
+        //clear all player highlights
+        //TODO: get player color function
+        //add highlight to $(`.hand.${data.Turn}`)
         if(playername == data.Turn){
             //make turn
             console.log("Start Draw")
@@ -252,9 +258,21 @@ function setup_listeners(){
         delay_discard_card_show(d)
       }
   })
-}
 
-async function card_race(){
+  db.collection("games").doc(gameid).collection("GameState").doc("Highlight").onSnapshot((doc)=>{
+    data = doc.data()
+    //face down all cards
+    if(data.cards.length>0){
+        //for each card in cards
+            //if card.value and card.suit
+                //show card (search ${)
+            //highlight card
+    }
+})
+  
+}
+match = false
+async function card_race(timeout){
     clear_card_race()
     setTimeout(()=>{
             //calculate the fastest response time
@@ -264,6 +282,11 @@ async function card_race(){
                 times = Object.keys(data)
                 collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
                 play_pos = data[times.sort(collator.compare)[0]]
+                //send in data
+                //TODO: rework with while loop
+                // punish proper player
+                // highlight cards until valid match
+                // set matched = true if match
                 first_match_on_discard(play_pos.player, play_pos.pos)
             }
             //next turn
@@ -273,5 +296,12 @@ async function card_race(){
                 db.collection("games").doc(gameid).collection("GameState").doc("Turn").set({"Turn":data.players[idx]})
             })
         })
-    }, 6000)
+    }, timeout? timeout: 6000)
+    //TODO: Do power
 }
+//if do power
+        //do power
+                        //highlight changing cards for .5 sß
+        //do_power = false
+        //if matched
+            //card race (could be a quicker version)
