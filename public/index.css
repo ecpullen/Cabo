@@ -138,7 +138,7 @@
     height: 100%;
 }
 
-#opcards, #middeck, #playercards, #startgame {
+#opcards, #middeck, #playercards, #lobby {
     display: none;
 }
 

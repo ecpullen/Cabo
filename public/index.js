@@ -60,14 +60,25 @@ function make_deck(){
     db.collection("games").doc(gameid).update({"discard": []})
 }
 
-function draw_deck(){
+function draw_deck(cards){
     return db.collection("games").doc(gameid).get().then((doc) => {
         data = doc.data()
         console.log(data)
         deck = data.deck
-        let card = deck.pop()
-        db.collection("games").doc(gameid).update({deck})
-        return card
+        if(!cards){
+            let card = deck.pop()
+            db.collection("games").doc(gameid).update({deck})
+            return card
+        }
+        else{
+            dealt_cards = []
+            for(i=0; i < cards; i++){
+                dealt_cards.push(deck.pop())
+            }
+            db.collection("games").doc(gameid).update({deck})
+            return dealt_cards
+        }
+        
     })
 }
 
@@ -131,12 +142,17 @@ function swap_with_op(player_position, opponent, opponent_position){
 }
 
 function load_game(ignore_discard){
+    console.log("in load game")
     db.collection("games").doc(gameid).get().then((doc) => {
        data = doc.data()
        console.log(data)
+       if(!data){
+           return load_game(ignore_discard)
+       }
        hands = data.hands
        console.log(hands)
         playerhand = {}
+        $("#opcards").empty()
         for(player in hands){
             if (player == playername){
                 playerhand = hands[player]
@@ -144,7 +160,6 @@ function load_game(ignore_discard){
             else{
                 hand = $("<div class='hand "+player+"'></div>")
                 inner = " <div class='name'>"+player+"</div>"
-                $("#opcards").empty()
                 for(card in hands[player]){
                     inner = inner + "<div class='card p"+card+"'><img src='Cards/back.jpg' alt='Card' class='cardimg'></div>"
                 }
@@ -161,7 +176,7 @@ function load_game(ignore_discard){
         }
         hand.html($(inner))
         $("#playercards").empty().append(hand)
-        if(ignore_discard){
+        if(!ignore_discard){
             $("#discard").empty()
             card = data.discard.pop()
             if(card){
@@ -177,10 +192,17 @@ function load_game(ignore_discard){
 
 discard_shown_time = 0
 discard = ""
-function delay_discard_card_show(card){
+function delay_discard_card_show(card, player, pos){
     timeleft = 3
     $('#center').css('display','block')
     $("#center").html(timeleft)
+    //change color of card
+    if(player && pos){
+        card_div = $(`.hand.${player} .card.p${pos}`)
+        card_div.empty()
+        card_div.append(`<img src='Cards/blue_back.jpg' alt='Card' class='cardimg'></img>`)
+        console.log("changed card")
+    }
     timer = setInterval(function(){
         timeleft -= 1
         $("#center").html(timeleft)
@@ -189,11 +211,18 @@ function delay_discard_card_show(card){
             clearInterval(timer)
             $('#center').css('display','none')
             $("#discard .cardimg").attr("src", `Cards/${card.value + card.suit}.jpg`)
-            delay_discard_card_show = Date.now()
+            discard_shown_time= Date.now()
             discard = card
             $(".card").click(submit_match_card)
             setTimeout(function(){
                 $(".card").unbind()
+
+                if(player && pos){
+                    card_div = $(`.hand.${player} .card.p${pos}`)
+                    card_div.empty()
+                    card_div.append(`<img src='Cards/back.jpg' alt='Card' class='cardimg'></img>`)
+                    console.log("changed card")
+                }
             }, 3000)
         }
     }, 1000)
@@ -217,7 +246,8 @@ function first_match_on_discard(player, pos){
     get_player_hand(player).then(function(hand){
         console.log(hand)
         if (discard.value == hand[pos].value){
-            discard_card(hand[pos])
+            card = hand[pos]
+            discard_card(card)
             delete hand[pos]
             p_update = "hands."+player
             db.collection("games").doc(gameid).update({[p_update]:hand})
@@ -276,16 +306,19 @@ function shuffle(array) {
 function make_card_swap(position, card){
     console.log("Creating function", position, card)
     return function() {
+        console.log("Running swap function", position, card)
         //card goes to play hand position
         //player hand position goes to deck
-        db.collection("games").doc(gameid).get().then((doc) => {
+        return db.collection("games").doc(gameid).get().then((doc) => {
             data = doc.data()
             p_hand = data.hands[playername]
             discard_c = p_hand[position.toString()]
+            console.log("discarding", discard_c)
             p_hand[position.toString()] = card
             p_update = "hands."+playername
             db.collection("games").doc(gameid).update({[p_update]:p_hand})
             discard_card(discard_c)
+            return discard_c
         })
     }
 }
@@ -301,115 +334,3 @@ function make_card_to_discard(card){
         discard_card(card)
     }
 }
-
-  //Listeners (Snapshot)
-  //turn snapshot
-  db.collection("games").doc(gameid).collection("GameState").doc("Turn").onSnapshot((doc)=>{
-      if(!game_started){
-        return
-      }
-      data = doc.data()
-      if(playername == data.Turn){
-          //make turn
-          console.log("Start Draw")
-          $("#deck").click(()=>{
-                draw_deck().then((card)=>{
-                    show_cards_center([card])
-                    //card on center goes to discard
-                    c2dis = make_card_to_discard(card)
-                    $("#carddealt").click(function(){
-                        console.log("in carddealt")
-                        c2dis()
-                        //center disappears
-                        $("#centercards").css("display","none")
-                        $('#carddealt').unbind()
-                        //change discard doc
-                        db.collection("games").doc(gameid).collection("GameState").doc("Discard").set({"Card":card})
-                        card_race()
-                    })
-                    //card in deck swaps with center
-                    hand = data.hands[playername.toString()]
-                    for(pos in hand){
-                        swap = make_card_swap(pos, card)
-                        $(`.hand.${playername} .card.p${pos}`).click(function(){
-                            swap()
-                            //center disappears
-                            $("#centercards").css("display","none")
-                            //remove onclick
-                            $(this).parent().children().each(function(){
-                                $(this).unbind()
-                            })
-                            //change discard doc
-                            db.collection("games").doc(gameid).collection("GameState").doc("Discard").set({"Card":card})
-                            card_race()
-                        })
-                    }
-                })
-          })
-          $("#discard").click(()=>{
-            draw_discard().then((card)=>{
-                show_cards_center([card])
-                //card on center goes to discard
-                swap = make_card_to_discard(card)
-                $("#carddealt").click(function(){
-                    swap()
-                    //center disappears
-                    $("#centercards").css("display","none")
-                    $('#carddealt').unbind()
-                    //change discard doc
-                    db.collection("games").doc(gameid).collection("GameState").doc("Discard").set({"Card":card})
-                    card_race()
-                })
-                //card in deck swaps with center
-                hand = data.hands[playername.toString()]
-                for(pos in hand){
-                    swap = make_card_swap(pos, card)
-                    $(`.hand.${playername} .card.p${pos}`).click(function(){
-                        swap()
-                        //center disappears
-                        $("#centercards").css("display","none")
-                        //remove onclick
-                        $(this).parent().children().each(function(){
-                            $(this).unbind()
-                            //change discard doc
-                            db.collection("games").doc(gameid).collection("GameState").doc("Discard").set({"Card":card})
-                            card_race()
-                        })
-                    })
-                }
-            })
-          })
-      }
-  })
-
-  async function card_race(){
-        clear_card_race()
-        setTimeout(()=>{
-                //calculate the fastest response time
-            db.collection("games").doc(gameid).collection("GameState").doc("RacedCards").get().then(function(doc){
-                if(doc.exists){
-                    data = doc.data()
-                    times = Object.keys(data)
-                    collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-                    card = data[times.sort(collator.compare)[0]]
-                    discard_card(card)
-                }
-                //next turn
-                db.collection("games").doc(gameid).get().then((doc) => {
-                    data = doc.data()
-                    idx = data.players.indexOf(playername) + 1
-                    db.collection("games").doc(gameid).collection("GameState").doc("Turn").set({"Turn":data.players[idx]})
-                })
-            })
-        }, 6000)
-  }
-
-db.collection("games").doc(gameid).collection("GameState").doc("Discard").onSnapshot((doc)=>{
-    if(!game_started){
-      return
-    }
-    data = doc.data()
-    d = data.Card
-    load_game(false)
-    delay_discard_card_show(d)
-})
